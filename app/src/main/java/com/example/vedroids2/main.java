@@ -13,9 +13,13 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.Calendar;
+import java.util.Date;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import java.util.ArrayList;
 
 
 public class main extends Activity {
@@ -23,6 +27,7 @@ public class main extends Activity {
     SharedPreferences sharedPref;
     Switch blackThemeSwitch;
     boolean switchStatus;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,9 +75,17 @@ public class main extends Activity {
                 if(true)
                 {
                     Intent intent = new Intent(main.this, List.class);
-                    String name = nameField.getText().toString();
-                    intent.putExtra("hello", "Привет " + name);
+
+                    Date currentTime = Calendar.getInstance().getTime();
+                    ArrayList <String> authorizationData = new ArrayList<>();
+                    authorizationData.add(nameField.getText().toString());
+                    authorizationData.add(passwordField.getText().toString());
+                    authorizationData.add((currentTime.toString()));
+
+                    intent.putStringArrayListExtra("LoginPass", authorizationData);
                     intent.putExtra("color", backColor);
+
+
                     finish();
                     main.this.startActivity(intent);
                 }
@@ -120,6 +133,7 @@ public class main extends Activity {
 
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
+
         editor.putBoolean("switchStatus",switchStatus);
         editor.apply();
         Log.i("AppLogger", "Приложение закрыто");

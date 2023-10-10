@@ -13,8 +13,9 @@
             android:id="@+id/textList"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:layout_marginBottom="0dp">
-
+            android:layout_marginBottom="0dp"
+            android:choiceMode="singleChoice"
+            android:listSelector="@color/purple_200">
         </ListView>
 
         <EditText

@@ -3,6 +3,7 @@ package com.example.vedroids2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,8 +40,9 @@ public class List extends Activity {
         myLayout.setBackgroundColor(backColor);
 
         //Вывод имени
-        String str = arguments.get("hello").toString();
-        Toast.makeText(List.this, str, Toast.LENGTH_SHORT).show();
+        ArrayList <String> authorizationData = arguments.getStringArrayList("LoginPass");
+
+        Toast.makeText(List.this, "Your login: " + authorizationData.get(0) + "\n" + "Your pass: " + authorizationData.get(1), Toast.LENGTH_SHORT).show();
 
         //Создание списка
         myStringArray = new ArrayList<String>();
@@ -49,6 +51,7 @@ public class List extends Activity {
             myStringArray.add(sharedPref.getString("stroka" + i, ""));
         }
 
+        myStringArray.add(authorizationData.get(0) + " " + authorizationData.get(2));
         //Создание динамического списка
         ArrayAdapter<String> TextAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, myStringArray);
         ListView textList = findViewById(R.id.textList);
@@ -62,6 +65,8 @@ public class List extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 index = i;
+                textList.setSelected(true);
+                textList.setSelection(index);
             }
         });
 
@@ -82,6 +87,8 @@ public class List extends Activity {
             @Override
             public void onClick(View view) {
                 myStringArray.remove(index);
+                textList.clearChoices();
+                textList.requestLayout();
                 TextAdapter.notifyDataSetChanged();
                 index = 0;
             }
