@@ -25,16 +25,10 @@ public class main extends Activity {
 
     DatabaseHandler db = new DatabaseHandler(this);
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_helloact);
-
-
-
-        String login = new String("Влад");
-        String password = new String("123");
 
         EditText loginField = findViewById(R.id.editTextName);
         EditText passwordField = findViewById(R.id.editTextTextPassword);
@@ -45,14 +39,14 @@ public class main extends Activity {
             @Override
             public void onClick(View view) {
                 List<User> userList = db.getAllUsers();
+                User currentUser;
                 boolean access = false;
                 for(int i = 0; i < userList.size(); i++) {
-                    if (loginField.getText().toString().equals(userList.get(i)._login) &&
-                            passwordField.getText().toString().equals(userList.get(i)._pass)) {
+                    currentUser = userList.get(i);
+                    if (loginField.getText().toString().equals(currentUser.getLogin()) &&
+                            passwordField.getText().toString().equals(currentUser.getPass())) {
                         Intent intent = new Intent(main.this, MyList.class);
-                        String name = loginField.getText().toString();
-                        intent.putExtra("hello", "Привет " + name);
-                        intent.putExtra("account", userList.get(i)._login);
+                        intent.putExtra("account", currentUser.getID());
                         finish();
                         main.this.startActivity(intent);
                         access = true;

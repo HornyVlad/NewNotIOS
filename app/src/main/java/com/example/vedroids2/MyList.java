@@ -25,18 +25,13 @@ import java.util.List;
 public class MyList extends Activity {
 
     ArrayList<String> myStringArray;
-    int index = 0;
-
     DatabaseHandler db = new DatabaseHandler(this);
+    User currentUser = new User();
+    int index = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list);
-
-        //Вывод имени
-        Bundle arguments = getIntent().getExtras();
-        String str = arguments.get("hello").toString();
-        Toast.makeText(MyList.this, str, Toast.LENGTH_SHORT).show();
 
         //Создание списка
         myStringArray = new ArrayList<String>();
@@ -44,6 +39,20 @@ public class MyList extends Activity {
         for(int i = 0; i < userList.size(); i++)
         {
             myStringArray.add(userList.get(i)._login + "\t" + userList.get(i)._pass);
+        }
+
+        //Вывод имени
+        Bundle arguments = getIntent().getExtras();
+
+        //Определяем текущего пользователя
+        int userId = Integer.parseInt(arguments.get("account").toString());
+        for(int i = 0; i < userList.size(); i++)
+        {
+            if (userList.get(i).getID() == userId)
+            {
+                currentUser = userList.get(i);
+                index = i;
+            }
         }
 
         //Создание динамического списка
@@ -58,25 +67,17 @@ public class MyList extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(MyList.this);
         final EditText et = new EditText(MyList.this);
         et.setHint("Пароль");
-        String login = arguments.get("account").toString();
         builder.setView(et).setTitle("Укажите новый пароль пользователя").setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                for(int i = 0; i < userList.size(); i++)
-                {
-                    if(login.equals(userList.get(i)._login)){
-                        userList.get(i).setPass(et.getText().toString());
-                        db.deleteUser(userList.get(i));
-                        db.addUser(new User(userList.get(i)._login, userList.get(i)._pass));
-                        myStringArray.remove(i);
-                        myStringArray.add(i, userList.get(i)._login + "\t" + userList.get(i)._pass);
-                        TextAdapter.notifyDataSetChanged();
-                    }
-                }
+                db.updateUser(currentUser, et.getText().toString());
+                currentUser.setPass(et.getText().toString());
+                myStringArray.remove(index);
+                myStringArray.add(index, currentUser.getLogin() + "\t" + currentUser.getPass());
+                TextAdapter.notifyDataSetChanged();
                 dialog.cancel();
             }
         });
 
-        // create alert dialog
         AlertDialog alertDialog = builder.create();
 
         //Функционал кнопка "добавить"
