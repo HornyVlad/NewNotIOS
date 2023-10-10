@@ -61,9 +61,8 @@ public class MyList extends Activity {
                         for(int i = 0; i < userList.size(); i++)
                         {
                             if(login.equals(userList.get(i)._login)){
-                                db.deleteUser(userList.get(i));
+                                db.updateUser(userList.get(i), et.getText().toString());
                                 userList.get(i).setPass(et.getText().toString());
-                                db.addUser(new User(userList.get(i)._login, userList.get(i)._pass));
                                 myStringArray.remove(i);
                                 myStringArray.add(i, userList.get(i)._login + "\t" + userList.get(i)._pass);
                                 textList.post(new Runnable() {
@@ -104,6 +103,7 @@ public class MyList extends Activity {
                         });
                     }
                 }).start();
+
             }
         });
 
